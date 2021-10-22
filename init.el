@@ -85,6 +85,7 @@
 	ido-auto-merge-work-directories-length -1)
   (ido-mode)
   (ido-everywhere))
+
 (use-package flx-ido :ensure t :requires ido :config (flx-ido-mode))
 (use-package ido-completing-read+ :ensure t :requires ido
   :config
