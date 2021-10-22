@@ -11,8 +11,10 @@
       read-process-output-max (* 1024 1024))
 
 (global-display-line-numbers-mode)
-
+(electric-pair-mode)
 (load-theme 'dracula t)
+
+(add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font Mono 14"))
 
 (use-package smex
   :ensure t
@@ -37,6 +39,7 @@
   (setq lsp-keymap-prefix "C-c l")
   :config
   (setq lsp-idle-delay 0.1))
+
 (use-package lsp-ui
   :ensure t
   :commands lsp-ui-mode)
@@ -70,9 +73,9 @@
     "ps" 'helm-projectile-ag
     "pa" 'helm-projectile-find-file-in-known-projects
   ))
+
 (use-package helm-lsp
   :ensure t)
-
 
 (use-package ido
   :ensure t
@@ -119,6 +122,7 @@
    company-tooltip-limit 20)
   (setq company-backends
 	(mapcar #'company-mode/backend-with-yas company-backends)))
+
 (use-package company-box
   :ensure t
   :requires company
@@ -138,8 +142,6 @@
     :ensure t
     :config
     (powerline-evil-vim-color-theme))
-
-
   (use-package projectile
     :ensure t
     :config
