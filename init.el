@@ -10,11 +10,54 @@
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024))
 
+
+(setq inhibit-startup-screen t)
+
 (global-display-line-numbers-mode)
 (electric-pair-mode)
-(load-theme 'dracula t)
+(tool-bar-mode -1)
+(global-hl-line-mode t)
 
 (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font Mono 14"))
+
+(setq backup-directory-alist '(("." . "~/.emacs_saves"))
+      backup-by-copying t
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
+(use-package doom-modeline
+  :ensure t
+  :config (doom-modeline-mode 1))
+
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-laserwave t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
 
 (use-package smex
   :ensure t
@@ -34,15 +77,38 @@
 (use-package lsp-mode
   :ensure t
   :commands lsp
+  :hook
+  ((c++-mode . lsp)
+   (c-mode . lsp)
+   (python-mode . lsp)
+   (csharp-mode . lsp)
+   (rust-mode . lsp))
   :init
-  (add-hook 'prog-mode-hook #'lsp)
   (setq lsp-keymap-prefix "C-c l")
   :config
-  (setq lsp-idle-delay 0.1))
+  (setq lsp-idle-delay 0.5
+        lsp-enable-symbol-highlighting t
+        lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
+        lsp-pyls-plugins-flake8-enabled t))
 
 (use-package lsp-ui
   :ensure t
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-show-hover t
+                lsp-ui-sideline-delay 0.5
+                lsp-ui-doc-delay 5
+                lsp-ui-sideline-ignore-duplicates t
+                lsp-ui-doc-position 'bottom
+                lsp-ui-doc-alignment 'frame
+                lsp-ui-doc-header nil
+                lsp-ui-doc-include-signature t
+                lsp-ui-doc-use-childframe t)
+  :bind (:map evil-normal-state-map
+              ("gd" . lsp-ui-peek-find-definitions)
+              ("gr" . lsp-ui-peek-find-references)
+              :map md/leader-map
+              ("Ni" . lsp-ui-imenu)))
 
 (use-package lsp-treemacs
   :ensure t
@@ -61,18 +127,10 @@
   :ensure t)
 (use-package dap-mode
   :ensure t)
-(use-package helm-xref
-  :ensure t)
-(use-package helm-projectile
-  :bind (("C-S-P" . helm-projectile-switch-project)
-         :map evil-normal-state-map
-         ("C-p" . helm-projectile))
+(use-package magit
   :ensure t
-  :config
-  (evil-leader/set-key
-    "ps" 'helm-projectile-ag
-    "pa" 'helm-projectile-find-file-in-known-projects
-  ))
+  :bind (("C-x C-g" . magit-status)
+	 ("C-x g" . magit-status)))
 
 (use-package helm-lsp
   :ensure t)
@@ -113,7 +171,6 @@
 	backend
       (append (if (consp backend) backend (list backend))
 	      '(:with company-yasnippet))))
-
   :init (global-company-mode t)
   :config
   (setq
@@ -123,6 +180,11 @@
   (setq company-backends
 	(mapcar #'company-mode/backend-with-yas company-backends)))
 
+(use-package cmake-ide
+  :ensure t
+  :config
+  (cmake-ide-setup))
+
 (use-package company-box
   :ensure t
   :requires company
@@ -130,31 +192,36 @@
 
 (use-package evil
   :ensure t
+  :init
+  (setq evil-want-keybinding nil)
   :config
   (evil-mode 1)
+  (use-package evil-collection
+    :ensure t
+    :requires evil
+    :config
+    (evil-collection-init))
   (use-package evil-surround
     :ensure t
     :config (global-evil-surround-mode))
   (use-package evil-indent-textobject
-    :ensure t)
-  ;;  (use-package evil-org TODO
-  (use-package powerline-evil
+    :ensure t))
+
+(use-package projectile
     :ensure t
     :config
-    (powerline-evil-vim-color-theme))
-  (use-package projectile
-    :ensure t
-    :config
+    (use-package projectile-ripgrep
+      :requires projectile
+      :ensure t)
     (projectile-global-mode)
-    :bind (:map projectile-mode-map
-		("s-p" . projectile-command-map)
-		("C-c p" . projectile-command-map)))
+    :bind (("C-S-P" . projectile-switch-project))
+    :bind-keymap ("C-c p" . projectile-command-map))
 
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(package-selected-packages '(dracula-theme smex use-package)))
+;; If there is e than one, they won't work right.
+  '(package-selected-packages '(dracula-theme smex use-package))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -167,6 +234,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("234dbb732ef054b109a9e5ee5b499632c63cc24f7c2383a849815dacc1727cb6" default))
+ '(helm-minibuffer-history-key "M-p")
  '(ido-everywhere t)
  '(package-selected-packages
-   '(lsp-ui company-box csharp-mode ido-completing-read+ ido-vertical-mode flx-ido helm-projectile yasnippet helm-lsp helm-xref dap-mode hydra flycheck avy which-key use-package smex projectile powerline-evil lsp-mode evil-surround evil-indent-textobject dracula-theme company)))
+   '(doom-themes doom-modeline evil-org evil-collection projectile-ripgrep ripgrep exec-path-from-shell magit cmake-ide lsp-ui company-box csharp-mode ido-completing-read+ ido-vertical-mode flx-ido helm-projectile yasnippet helm-lsp helm-xref dap-mode hydra flycheck avy which-key use-package smex projectile powerline-evil lsp-mode evil-surround evil-indent-textobject dracula-theme company)))

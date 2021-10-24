@@ -55,3 +55,11 @@ smex-items
 
 # network security
 /network-security.data
+/.dap-breakpoints
+/transient/
+/snippets/
+
+/\\
+/projectile.cache
+/url/
+url/cookies
