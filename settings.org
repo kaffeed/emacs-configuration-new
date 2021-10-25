@@ -227,6 +227,11 @@
    #+begin_src emacs-lisp
      (use-package dap-mode
        :ensure t)
+
+     (use-package dap-cpptools
+       :ensure t
+       :config (dap-cpptools-setup))
+
    #+end_src
 ** Language Modes
 *** CMake
