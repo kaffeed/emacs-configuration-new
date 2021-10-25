@@ -1,7 +1,7 @@
 #+author: Sebastian Schubert
 #+date: <2021-10-25 Mo>
 
-* UI Configuration
+* Configuration
 ** Common UI Settings
   #+begin_src emacs-lisp
     (setq gc-cons-threshold (* 100 1024 1024) ;; C++ part
@@ -95,7 +95,7 @@
        :ensure t
        :init (add-hook 'prog-mode-hook #'highlight-indent-guides-mode))
    #+end_src
-** The EVIL flagship....
+** The EVIL flagship
    #+begin_src emacs-lisp
      (use-package evil
        :ensure t
@@ -103,10 +103,13 @@
        (setq evil-want-keybinding nil)
        :config
        (evil-mode 1))
+   #+end_src
+   #+begin_src emacs-lisp 
      (use-package evil-indent-textobject
        :ensure t
        :requires evil
        :after evil)
+
      (use-package evil-collection
        :ensure t
        :requires evil
@@ -119,14 +122,24 @@
        :requires evil
        :config (global-evil-surround-mode))
    #+end_src
+** GPG Pinentry
+   #+begin_src emacs-lisp 
+	       (use-package pinentry
+		 :ensure t
+		 :init (setq epa-pinentry-mode 'loopback)
+		 :config
+		 (pinentry-start)
+	  (shell-command "gpgconf --launch-agent")
+     (shell-command "gpg-connect-agent /bye"))
+
+   #+end_src
 * Programming
 ** Version control
 *** Git
     #+begin_src emacs-lisp
       (use-package magit
 	:ensure t
-	:bind (("C-x C-g" . magit-status)
-	       ("C-x g" . magit-status)))
+	:bind (("C-x g" . magit-status)))
     #+end_src
 ** Project management
    #+begin_src emacs-lisp
@@ -174,7 +187,10 @@
        :ensure t
        :diminish yas-minor-mode
        :init (yas-global-mode t))
-   #+end_src
+     (use-package yasnippet-snippets
+       :requires yasnippet
+       :ensure t)
+       #+end_src
 ** LSP
    #+begin_src emacs-lisp
      (use-package lsp-mode
@@ -185,7 +201,8 @@
 	(c-mode . lsp)
 	(python-mode . lsp)
 	(csharp-mode . lsp)
-	(rust-mode . lsp))
+	(rust-mode . lsp)
+	(typescript-mode . lsp))
        :init
        (setq lsp-keymap-prefix "C-c l")
        :config
@@ -221,17 +238,11 @@
        (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
        (require 'dap-cpptools)
        (yas-global-mode))
-
    #+end_src
 ** DAP Mode
    #+begin_src emacs-lisp
      (use-package dap-mode
        :ensure t)
-
-     (use-package dap-cpptools
-       :ensure t
-       :config (dap-cpptools-setup))
-
    #+end_src
 ** Language Modes
 *** CMake
@@ -269,20 +280,4 @@
       ;;     :ensure t			    ;;
       ;;     :config (dap-node-setup)))	    ;;
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    #+end_src
-** Miscellaneous Modes 
-*** Avy
-    #+begin_src emacs-lisp
-      (use-package avy
-	:ensure t)
-    #+end_src
-*** FlyCheck
-    #+begin_src emacs-lisp
-      (use-package flycheck
-	:ensure t)
-    #+end_src
-*** hydra
-    #+begin_src emacs-lisp
-      (use-package hydra
-	:ensure t)
     #+end_src
