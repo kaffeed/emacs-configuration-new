@@ -133,6 +133,7 @@ configuration.
   ("C-c d" . hydra-dates/body)
   ("C-c e" . hydra-eyebrowse/body)
   ("C-c g" . hydra-git/body)
+  ("C-c o" . hydra-org/body)
   ("C-c p" . hydra-project/body)
   ("C-c u" . hydra-ui/body)
   :custom
