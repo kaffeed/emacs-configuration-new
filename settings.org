@@ -1,0 +1,14 @@
+#+author: Sebastian Schubert
+#+date: <2021-10-25 Mo>
+
+* UI Configuration
+  #+begin_src emacs-lisp
+    (setq gc-cons-threshold (* 100 1024 1024) ;; C++ part
+	  read-process-output-max (* 1024 1024))
+    (setq inhibit-startup-screen t)
+    (global-display-line-numbers-mode)
+    (electric-pair-mode)
+    (tool-bar-mode -1)
+    (global-hl-line-mode t)
+    (add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font Mono 14"))
+  #+end_src

@@ -10,7 +10,6 @@
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024))
 
-
 (setq inhibit-startup-screen t)
 
 (global-display-line-numbers-mode)
@@ -74,6 +73,17 @@
   :init
   (add-hook 'csharp-mode-hook #'company-mode))
 
+(use-package rust-mode
+  :ensure t
+  :init
+  (setq rust-format-on-save t)
+  (add-hook 'rust-mode-hook #'company-mode)
+  (add-hook 'rust-mode-hook (lambda () (setq indent-tabs-mode nil))))
+
+(use-package highlight-indent-guides
+  :ensure t
+  :init (add-hook 'prog-mode-hook #'highlight-indent-guides-mode))
+
 (use-package lsp-mode
   :ensure t
   :commands lsp
@@ -132,8 +142,14 @@
   :bind (("C-x C-g" . magit-status)
 	 ("C-x g" . magit-status)))
 
-(use-package helm-lsp
-  :ensure t)
+(use-package typescript-mode
+  :mode "\\.ts\\"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2)
+  (use-package dap-node
+    :ensure t
+    :config (dap-node-setup)))
 
 (use-package ido
   :ensure t
@@ -239,4 +255,4 @@
  '(helm-minibuffer-history-key "M-p")
  '(ido-everywhere t)
  '(package-selected-packages
-   '(doom-themes doom-modeline evil-org evil-collection projectile-ripgrep ripgrep exec-path-from-shell magit cmake-ide lsp-ui company-box csharp-mode ido-completing-read+ ido-vertical-mode flx-ido helm-projectile yasnippet helm-lsp helm-xref dap-mode hydra flycheck avy which-key use-package smex projectile powerline-evil lsp-mode evil-surround evil-indent-textobject dracula-theme company)))
+   '(rust-mode doom-themes doom-modeline evil-org evil-collection projectile-ripgrep ripgrep exec-path-from-shell magit cmake-ide lsp-ui company-box csharp-mode ido-completing-read+ ido-vertical-mode flx-ido helm-projectile yasnippet helm-lsp helm-xref dap-mode hydra flycheck avy which-key use-package smex projectile powerline-evil lsp-mode evil-surround evil-indent-textobject dracula-theme company)))
