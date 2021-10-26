@@ -35,8 +35,8 @@
   :custom
   (whitespace-style '(face empty indentation::space tab trailing)))
 #+END_SRC
-** Common Configuration Settings 
-*** Smex   
+** Common Configuration Settings
+*** Smex
     #+begin_src emacs-lisp
       (use-package smex
 	:ensure t
@@ -125,7 +125,7 @@ configuration.
              (me/eyebrowse-switch ,n)))))
 #+END_SRC
 *** Hydra
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
 (use-package hydra
   :ensure t
   :bind
@@ -458,7 +458,7 @@ Cycle between nil, t and 'relative."
        ;; Global settings (defaults)
        (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	     doom-themes-enable-italic t) ; if nil, italics is universally disabled
-       (load-theme 'doom-laserwave t)
+       (load-theme 'doom-challenger-deep t)
 
        ;; Enable flashing mode-line on errors
        (doom-themes-visual-bell-config)
@@ -473,10 +473,6 @@ Cycle between nil, t and 'relative."
      (use-package rainbow-delimiters
        :ensure t
        :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-
-     (use-package highlight-indent-guides
-       :ensure t
-       :init (add-hook 'prog-mode-hook #'highlight-indent-guides-mode))
    #+end_src
 ** The EVIL flagship
    #+begin_src emacs-lisp
@@ -487,7 +483,7 @@ Cycle between nil, t and 'relative."
        :config
        (evil-mode 1))
    #+end_src
-   #+begin_src emacs-lisp 
+   #+begin_src emacs-lisp
      (use-package evil-indent-textobject
        :ensure t
        :requires evil
@@ -506,7 +502,7 @@ Cycle between nil, t and 'relative."
        :config (global-evil-surround-mode))
    #+end_src
 ** GPG Pinentry
-   #+begin_src emacs-lisp 
+   #+begin_src emacs-lisp
 	       (use-package pinentry
 		 :ensure t
 		 :init (setq epa-pinentry-mode 'loopback)
@@ -600,51 +596,52 @@ Major modes for Git-specific files.
        #+end_src
 ** LSP
    #+begin_src emacs-lisp
-     (use-package lsp-mode
-       :ensure t
-       :commands lsp
-       :hook
-       ((c++-mode . lsp)
-	(c-mode . lsp)
-	(python-mode . lsp)
-	(csharp-mode . lsp)
-	(rust-mode . lsp)
-	(typescript-mode . lsp))
-       :init
-       (setq lsp-keymap-prefix "C-c l")
-       :config
-       (setq lsp-idle-delay 0.5
-	     lsp-enable-symbol-highlighting t
-	     lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
-	     lsp-pyls-plugins-flake8-enabled t))
+	(use-package lsp-mode
+	  :ensure t
+	  :commands lsp
+	  :hook
+	  ((c++-mode . lsp)
+	   (c-mode . lsp)
+	   (python-mode . lsp)
+	   (csharp-mode . lsp)
+	   (rust-mode . lsp)
+	   (typescript-mode . lsp)
+           (dart-mode . lsp))
+	  :init
+	  (setq lsp-keymap-prefix "C-c l")
+	  :config
+	  (setq lsp-idle-delay 0.5
+		lsp-enable-symbol-highlighting t
+		lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
+		lsp-pyls-plugins-flake8-enabled t))
 
-     (use-package lsp-ui
-       :ensure t
-       :commands lsp-ui-mode
-       :config
-       (setq lsp-ui-sideline-show-hover t
-	     lsp-ui-sideline-delay 0.5
-	     lsp-ui-doc-delay 5
-	     lsp-ui-sideline-ignore-duplicates t
-	     lsp-ui-doc-position 'bottom
-	     lsp-ui-doc-alignment 'frame
-	     lsp-ui-doc-header nil
-	     lsp-ui-doc-include-signature t
-	     lsp-ui-doc-use-childframe t)
-       :bind (:map evil-normal-state-map
-		   ("gd" . lsp-ui-peek-find-definitions)
-		   ("gr" . lsp-ui-peek-find-references)
-		   :map md/leader-map
-		   ("Ni" . lsp-ui-imenu)))
+	(use-package lsp-ui
+	  :ensure t
+	  :commands lsp-ui-mode
+	  :config
+	  (setq lsp-ui-sideline-show-hover t
+		lsp-ui-sideline-delay 0.5
+		lsp-ui-doc-delay 5
+		lsp-ui-sideline-ignore-duplicates t
+		lsp-ui-doc-position 'bottom
+		lsp-ui-doc-alignment 'frame
+		lsp-ui-doc-header nil
+		lsp-ui-doc-include-signature t
+		lsp-ui-doc-use-childframe t)
+	  :bind (:map evil-normal-state-map
+		      ("gd" . lsp-ui-peek-find-definitions)
+		      ("gr" . lsp-ui-peek-find-references)
+		      :map md/leader-map
+		      ("Ni" . lsp-ui-imenu)))
 
-     (use-package lsp-treemacs
-       :ensure t
-       :commands lsp-treemacs-errors-list)
+	(use-package lsp-treemacs
+	  :ensure t
+	  :commands lsp-treemacs-errors-list)
 
-     (with-eval-after-load 'lsp-mode
-       (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-       (require 'dap-cpptools)
-       (yas-global-mode))
+	(with-eval-after-load 'lsp-mode
+	  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+	  (require 'dap-cpptools)
+	  (yas-global-mode))
    #+end_src
 ** DAP Mode
    #+begin_src emacs-lisp
@@ -675,7 +672,80 @@ Major modes for Git-specific files.
 	(add-hook 'rust-mode-hook #'company-mode)
 	(add-hook 'rust-mode-hook (lambda () (setq indent-tabs-mode nil))))
     #+end_src
-*** Typescript 
+*** Dart
+#+begin_src emacs-lisp
+(use-package lsp-dart
+:ensure t
+:requires lsp-mode)
+
+(use-package dart-mode
+:ensure t)
+
+#+end_src
+
+*** Web-stuff
+#+begin_src emacs-lisp
+(use-package company-web :ensure t)
+
+(use-package ac-html-bootstrap :ensure t)
+
+(use-package web-mode
+  :diminish t
+  :ensure t
+  :mode
+  (("\\.phtml\\'" . web-mode)
+   ("\\.tpl\\.php\\'" . web-mode)
+   ("\\.jsp\\'" . web-mode)
+   ("\\.as[cp]x\\'" . web-mode)
+   ("\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.djhtml\\'" . web-mode)
+   ("\\.jst.ejs\\'" . web-mode)
+   ("\\.jst.ejs\\'" . web-mode)
+   ("\\.html?\\'" . web-mode))
+  :init
+  (setq web-mode-enable-block-face t)
+  (setq web-mode-enable-comment-keywords t)
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t)
+  (setq web-mode-script-padding 2)
+  (setq web-mode-style-padding 2)
+  (setq web-mode-comment-style 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-markup-indent-offset 2)
+  (add-hook 'web-mode-hook #'company-mode))
+
+(use-package typescript-mode
+  :ensure t
+  :init
+  (add-hook 'typescript-mode-hook #'company-mode))
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
+#+end_src
+
+*** Emmet
+#+BEGIN_SRC emacs-lisp
+(use-package emmet-mode
+:ensure t
+  :bind
+  (:map emmet-mode-keymap
+	("C-<return>" . nil))
+  :hook
+  (css-mode . emmet-mode)
+  (html-mode . emmet-mode)
+  (rjsx-mode . emmet-mode)
+  (typescript-tsx-mode . emmet-mode)
+  (web-mode . emmet-mode)
+  :custom
+  (emmet-insert-flash-time .1)
+  (emmet-move-cursor-between-quote t))
+#+END_SRC
+*** Typescript
     #+begin_src emacs-lisp
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;; (use-package typescript-mode		    ;;
@@ -690,7 +760,7 @@ Major modes for Git-specific files.
     #+end_src
 * ORG
 ** org-config
-   #+begin_src emacs-lisp 
+   #+begin_src emacs-lisp
      (defun me/org-cycle-parent (argument)
        "Go to the nearest parent heading and execute `org-cycle'."
        (interactive "p")
@@ -766,10 +836,8 @@ Major modes for Git-specific files.
 	   (kbd "C-k") #'me/org-show-previous-heading-tidily)))
    #+end_src
 ** org-d20
-   #+begin_src emacs-lisp 
-	  (use-package org-d20
-	  :ensure t
-:hook (org-mode . #'org-d20-mode)
+   #+begin_src emacs-lisp
+   (use-package org-d20
+     :ensure t
      :requires org)
    #+end_src
-   

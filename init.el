@@ -34,4 +34,4 @@
  '(helm-minibuffer-history-key "M-p")
  '(ido-everywhere t)
  '(package-selected-packages
-   '(org-d20 pinentry yasnippet-snippets yasnippet-bundle rust-mode doom-themes doom-modeline evil-org evil-collection projectile-ripgrep ripgrep exec-path-from-shell magit cmake-ide lsp-ui company-box csharp-mode ido-completing-read+ ido-vertical-mode flx-ido helm-projectile yasnippet helm-lsp helm-xref dap-mode hydra flycheck avy which-key use-package smex projectile powerline-evil lsp-mode evil-surround evil-indent-textobject dracula-theme company)))
+   '(tide typescript-mode org-d20 pinentry yasnippet-snippets yasnippet-bundle rust-mode doom-themes doom-modeline evil-org evil-collection projectile-ripgrep ripgrep exec-path-from-shell magit cmake-ide lsp-ui company-box csharp-mode ido-completing-read+ ido-vertical-mode flx-ido helm-projectile yasnippet helm-lsp helm-xref dap-mode hydra flycheck avy which-key use-package smex projectile powerline-evil lsp-mode evil-surround evil-indent-textobject dracula-theme company)))
