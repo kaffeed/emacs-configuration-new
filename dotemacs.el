@@ -18,14 +18,13 @@
   :ensure t
   :init
   (which-key-mode))
+(setq display-buffer-alist '(("\\`\\*e?shell" display-buffer-pop-up-window)))
 
-(use-package whitespace
-  :ensure nil
-  :hook
-  (prog-mode . whitespace-mode)
-  (text-mode . whitespace-mode)
-  :custom
-  (whitespace-style '(face empty indentation::space tab trailing)))
+(use-package sublimity
+  :ensure t
+  :config
+  (require 'sublimity-scroll)
+  (sublimity-mode 1))
 
 (use-package smex
   :ensure t
@@ -513,6 +512,11 @@ Cycle between nil, t and 'relative."
 
 (use-package dap-mode
   :ensure t)
+
+(use-package highlight-defined
+:ensure t
+:init
+(add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode))
 
 (use-package cmake-ide
   :ensure t
