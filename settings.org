@@ -682,7 +682,15 @@ Major modes for Git-specific files.
 :ensure t)
 
 #+end_src
-
+*** Python
+#+begin_src emacs-lisp
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+			 (require 'lsp-python-ms)
+			 (lsp))))  ; or lsp-deferred
+#+end_src
 *** Web-stuff
 #+begin_src emacs-lisp
 (use-package company-web :ensure t)
