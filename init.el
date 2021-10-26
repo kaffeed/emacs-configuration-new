@@ -10,7 +10,7 @@
 ;; Load config from org file
 (require 'org)
 (org-babel-load-file
- (expand-file-name "settings.org" user-emacs-directory))
+ (expand-file-name "dotemacs.org" user-emacs-directory))
 
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
