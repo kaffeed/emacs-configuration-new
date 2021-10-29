@@ -779,79 +779,110 @@ Major modes for Git-specific files.
 * ORG
 ** org-config
    #+begin_src emacs-lisp
-     (defun me/org-cycle-parent (argument)
-       "Go to the nearest parent heading and execute `org-cycle'."
-       (interactive "p")
-       (if (org-at-heading-p)
-	   (outline-up-heading argument)
-	 (org-previous-visible-heading argument))
-       (org-cycle))
+   (defun me/org-cycle-parent (argument)
+     "Go to the nearest parent heading and execute `org-cycle'."
+     (interactive "p")
+     (if (org-at-heading-p)
+	 (outline-up-heading argument)
+       (org-previous-visible-heading argument))
+     (org-cycle))
 
-     (defun me/org-show-next-heading-tidily ()
-       "Show next entry, keeping other entries closed."
-       (interactive)
-       (if (save-excursion (end-of-line) (outline-invisible-p))
-	   (progn (org-show-entry) (outline-show-children))
-	 (outline-next-heading)
-	 (unless (and (bolp) (org-at-heading-p))
-	   (org-up-heading-safe)
-	   (outline-hide-subtree)
-	   (user-error "Boundary reached"))
-	 (org-overview)
-	 (org-reveal t)
-	 (org-show-entry)
-	 (outline-show-children)))
+   (defun me/org-show-next-heading-tidily ()
+     "Show next entry, keeping other entries closed."
+     (interactive)
+     (if (save-excursion (end-of-line) (outline-invisible-p))
+	 (progn (org-show-entry) (outline-show-children))
+       (outline-next-heading)
+       (unless (and (bolp) (org-at-heading-p))
+	 (org-up-heading-safe)
+	 (outline-hide-subtree)
+	 (user-error "Boundary reached"))
+       (org-overview)
+       (org-reveal t)
+       (org-show-entry)
+       (outline-show-children)))
 
-     (defun me/org-show-previous-heading-tidily ()
-       "Show previous entry, keeping other entries closed."
-       (interactive)
-       (let ((pos (point)))
-	 (outline-previous-heading)
-	 (unless (and (< (point) pos) (bolp) (org-at-heading-p))
-	   (goto-char pos)
-	   (outline-hide-subtree)
-	   (user-error "Boundary reached"))
-	 (org-overview)
-	 (org-reveal t)
-	 (org-show-entry)
-	 (outline-show-children)))
+   (defun me/org-show-previous-heading-tidily ()
+     "Show previous entry, keeping other entries closed."
+     (interactive)
+     (let ((pos (point)))
+       (outline-previous-heading)
+       (unless (and (< (point) pos) (bolp) (org-at-heading-p))
+	 (goto-char pos)
+	 (outline-hide-subtree)
+	 (user-error "Boundary reached"))
+       (org-overview)
+       (org-reveal t)
+       (org-show-entry)
+       (outline-show-children)))
 
-     (defun me/org-src-buffer-name (name &rest _)
-       "Simple buffer name."
-       (format "*%s*" name))
+   (defun me/org-src-buffer-name (name &rest _)
+     "Simple buffer name."
+     (format "*%s*" name))
 
-     (use-package org
-       :ensure nil
-       :bind
-       (:map org-mode-map
-	     ("C-<return>" . nil)
-	     ("C-<tab>" . me/org-cycle-parent))
-       :hook
-       (org-mode . me/hydra-set-super)
-       :custom
-       (org-adapt-indentation nil)
-       (org-confirm-babel-evaluate nil)
-       (org-cycle-separator-lines 0)
-       (org-descriptive-links nil)
-       (org-edit-src-content-indentation 0)
-       (org-edit-src-persistent-message nil)
-       (org-fontify-done-headline t)
-       (org-fontify-quote-and-verse-blocks t)
-       (org-fontify-whole-heading-line t)
-       (org-return-follows-link t)
-       (org-src-tab-acts-natively t)
-       (org-src-window-setup 'current-window)
-       (org-startup-truncated nil)
-       (org-support-shift-select 'always)
-       :config
-       (require 'ob-shell)
-       (add-to-list 'org-babel-load-languages '(shell . t))
-       (modify-syntax-entry ?' "'" org-mode-syntax-table)
-       (advice-add 'org-src--construct-edit-buffer-name :override #'me/org-src-buffer-name)
-       (with-eval-after-load 'evil
-	 (evil-define-key* 'motion org-mode-map
-	   (kbd "C-j") #'me/org-show-next-heading-tidily
-	   (kbd "C-k") #'me/org-show-previous-heading-tidily)))
+   (use-package org
+     :ensure nil
+     :bind
+     (:map org-mode-map
+	   ("C-<return>" . nil)
+	   ("C-<tab>" . me/org-cycle-parent))
+     :hook
+     (org-mode . me/hydra-set-super)
+     :custom
+     (org-log-into-drawer t)
+     (org-adapt-indentation nil)
+     (org-confirm-babel-evaluate nil)
+     (org-cycle-separator-lines 0)
+     (org-descriptive-links nil)
+     (org-edit-src-content-indentation 0)
+     (org-edit-src-persistent-message nil)
+     (org-fontify-done-headline t)
+     (org-fontify-quote-and-verse-blocks t)
+     (org-fontify-whole-heading-line t)
+     (org-return-follows-link t)
+     (org-src-tab-acts-natively t)
+     (org-src-window-setup 'current-window)
+     (org-startup-truncated nil)
+     (org-support-shift-select 'always)
+     :config
+     (require 'ob-shell)
+     (add-to-list 'org-babel-load-languages '(shell . t))
+     (modify-syntax-entry ?' "'" org-mode-syntax-table)
+     (advice-add 'org-src--construct-edit-buffer-name :override #'me/org-src-buffer-name)
+     (with-eval-after-load 'evil
+       (evil-define-key* 'motion org-mode-map
+	 (kbd "C-j") #'me/org-show-next-heading-tidily
+	 (kbd "C-k") #'me/org-show-previous-heading-tidily)))
+
+   (use-package org-indent
+     :ensure nil
+     :diminish
+     :custom (org-indent-indentation-per-level 4))
+
+   (use-package org-capture
+     :ensure nil
+     :after org
+     :defer 1
+     :bind
+     ("C-c c" . org-capture)
+     :config
+     (setq org-refile-targets '((nil :maxlevel . 9)
+				(org-agenda-files :maxlevel . 9))
+	   org-outline-path-complete-in-steps nil
+	   org-refile-use-outline-path t)
+     )
+
+   (use-package org-agenda
+     :ensure nil
+     :after org
+     :bind ("C-c a" . org-agenda)
+     :custom
+     (org-agenda-include-diary t)
+     (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+				 (todo . " %i %-12:c%l")
+				 (tags . " %i %-12:c%l")
+				 (search . " %i %-12:c"))))
+
    #+end_src
 ** org-d20
    #+begin_src emacs-lisp
